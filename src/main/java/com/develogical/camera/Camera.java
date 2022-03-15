@@ -44,9 +44,9 @@ public class Camera {
 
     public void shutDownIfRequested() {
         this.writingData = false;
-//        if (this.offRequested) {
+        if (this.offRequested) {
             this.powerOff();
-//        }
+        }
     }
 }
 
