@@ -43,11 +43,24 @@ public class CameraTest {
         verify(this.memoryCard).write(Mockito.eq(RETURN_VALUE), Mockito.any());
     }
 
-   // @Test
-    //public void pressingTheShutterWithPowerNotOnCopiesDataFromTheSensorToTheMemory() {
-    //    this.underTest.pressShutter();
-    //    byte[] returnValue = new byte[]{};
-    //   when(sensor.readData()).thenReturn(returnValue);
-   //     verifyNoMoreInteractions(this.memoryCard);
-    //}
+    @Test
+    public void pressingTheShutterWithPowerOffCopiesNoDataFromTheSensorToTheMemory() {
+        this.underTestWithCard.pressShutter();
+        verifyNoMoreInteractions(this.memoryCard);
+
+        this.underTestWithCard.powerOff();
+        this.underTestWithCard.pressShutter();
+        verifyNoMoreInteractions(this.memoryCard);
+    }
+
+    @Test
+    public void pressingTheShutterWithPoweredOnThenOffCopiesNoDataFromTheSensorToTheMemory() {
+        this.underTestWithCard.pressShutter();
+        verifyNoMoreInteractions(this.memoryCard);
+
+        this.underTestWithCard.powerOn();
+        this.underTestWithCard.powerOff();
+        this.underTestWithCard.pressShutter();
+        verifyNoMoreInteractions(this.memoryCard);
+    }
 }

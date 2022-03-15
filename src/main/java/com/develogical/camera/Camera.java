@@ -4,6 +4,7 @@ public class Camera {
 
     private final Sensor sensor;
     private final MemoryCard memoryCard;
+    private Boolean amITheCameraOn = false;
 
     public Camera(final Sensor sensor) {
         this.sensor = sensor;
@@ -16,16 +17,18 @@ public class Camera {
     }
 
     public void pressShutter() {
-        if (this.memoryCard != null) {
+        if (this.memoryCard != null && this.amITheCameraOn) {
             this.memoryCard.write(this.sensor.readData(), null);
         }
     }
 
     public void powerOn() {
+        this.amITheCameraOn = true;
         this.sensor.powerUp();
     }
 
     public void powerOff() {
+        this.amITheCameraOn = false;
        this.sensor.powerDown();
     }
 }
