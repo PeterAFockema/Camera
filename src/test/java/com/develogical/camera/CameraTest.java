@@ -2,6 +2,7 @@ package com.develogical.camera;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import static org.mockito.Mockito.*;
@@ -56,5 +57,26 @@ public class CameraTest {
         this.underTestWithCard.powerOff();
         this.underTestWithCard.pressShutter();
         verifyNoMoreInteractions(this.memoryCard);
+    }
+
+    @Test
+    public void ifTheDataIsCurrentlyBeingWrittenSwitchingTheCameraOffDoesNotPowerDownTheSensor() {
+        ArgumentCaptor<WriteCompleteListener> writeCompleteListenerArgumentCaptor
+                = ArgumentCaptor.forClass(WriteCompleteListener.class);
+
+        this.underTestWithCard.powerOn();
+        this.underTestWithCard.pressShutter();
+        this.underTestWithCard.powerOff();
+
+        verify(this.memoryCard).write(any(), writeCompleteListenerArgumentCaptor.capture());
+        WriteCompleteListener writeCompleteListener = writeCompleteListenerArgumentCaptor.getValue();
+        verify(this.sensor, times(0)).powerDown();
+
+        //Still writing
+        writeCompleteListener.writeComplete();
+
+        //Finished writing
+        verify(this.sensor, times(1)).powerDown();
+
     }
 }

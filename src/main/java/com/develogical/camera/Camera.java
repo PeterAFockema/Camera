@@ -1,10 +1,15 @@
 package com.develogical.camera;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 public class Camera {
 
     private final Sensor sensor;
     private final MemoryCard memoryCard;
     private Boolean amITheCameraOn = false;
+    private Boolean writingData = false;
+    private Boolean offRequested = false;
+    private final WriteCompleteListener writeCompleteListener = new Listener(this);
 
     public Camera(final Sensor sensor) {
         this.sensor = sensor;
@@ -18,7 +23,8 @@ public class Camera {
 
     public void pressShutter() {
         if (this.memoryCard != null && this.amITheCameraOn) {
-            this.memoryCard.write(this.sensor.readData(), null);
+            this.writingData = true;
+            this.memoryCard.write(this.sensor.readData(), this.writeCompleteListener);
         }
     }
 
@@ -28,8 +34,19 @@ public class Camera {
     }
 
     public void powerOff() {
-        this.amITheCameraOn = false;
-       this.sensor.powerDown();
+        if (!this.writingData) {
+            this.amITheCameraOn = false;
+            this.sensor.powerDown();
+        } else {
+            this.offRequested = true;
+        }
+    }
+
+    public void shutDownIfRequested() {
+        this.writingData = false;
+//        if (this.offRequested) {
+            this.powerOff();
+//        }
     }
 }
 
