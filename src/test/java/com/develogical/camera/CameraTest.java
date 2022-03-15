@@ -51,12 +51,6 @@ public class CameraTest {
         this.underTestWithCard.powerOff();
         this.underTestWithCard.pressShutter();
         verifyNoMoreInteractions(this.memoryCard);
-    }
-
-    @Test
-    public void pressingTheShutterWithPoweredOnThenOffCopiesNoDataFromTheSensorToTheMemory() {
-        this.underTestWithCard.pressShutter();
-        verifyNoMoreInteractions(this.memoryCard);
 
         this.underTestWithCard.powerOn();
         this.underTestWithCard.powerOff();
